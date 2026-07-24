@@ -53,7 +53,7 @@ export const ui = {
     contact: {
       eyebrow: "// contato",
       title: "Vamos conversar",
-      subtitle: "Aberto a novas oportunidades e parcerias. Escolha o melhor canal.",
+      subtitle: "Escolha o canal que preferir para entrar em contato.",
     },
   },
   en: {
@@ -105,7 +105,7 @@ export const ui = {
     contact: {
       eyebrow: "// contact",
       title: "Let's talk",
-      subtitle: "Open to new opportunities and partnerships. Pick the best channel.",
+      subtitle: "Pick whichever channel you prefer to get in touch.",
     },
   },
 } as const;
