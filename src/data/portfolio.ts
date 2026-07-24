@@ -140,6 +140,13 @@ export const skillGroups: SkillGroup[] = [
 
 export const projects: Project[] = [
   {
+    name: "Portfólio",
+    description:
+      "Este site. Portfólio pessoal com visual tech/terminal: fundo animado de circuito em canvas, efeito Liquid Glass, tema claro/escuro e alternância entre português e inglês. Uma seção por tela, responsivo e acessível, com testes automatizados e CI/CD.",
+    url: "https://portfolio-nathan-mateus.vercel.app/",
+    tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "Motion"],
+  },
+  {
     name: "FinTrack",
     description:
       "Dashboard local-first de finanças pessoais: transações com categorias e carteiras, indicadores, metas de economia, gráficos, importação de CSV e relatórios em PDF. Mascaramento de valores — os dados ficam no próprio navegador.",
@@ -239,6 +246,13 @@ const skillGroupsEn: SkillGroup[] = [
 ];
 
 const projectsEn: Project[] = [
+  {
+    name: "Portfolio",
+    description:
+      "This site. Personal portfolio with a tech/terminal look: animated canvas circuit background, Liquid Glass effect, light/dark theme and Portuguese/English switching. One section per screen, responsive and accessible, with automated tests and CI/CD.",
+    url: "https://portfolio-nathan-mateus.vercel.app/",
+    tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "Motion"],
+  },
   {
     name: "FinTrack",
     description:

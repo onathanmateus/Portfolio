@@ -36,17 +36,30 @@ describe("Contact", () => {
 });
 
 describe("Projects", () => {
-  it("mostra o projeto com tags e link de acesso, sem link de repositório", () => {
+  it("mostra todos os projetos com tags e link de acesso, sem link de repositório", () => {
     render(<Projects />);
-    const project = projects[0];
 
-    expect(screen.getByRole("heading", { name: project.name })).toBeInTheDocument();
-    for (const tag of project.tags) {
-      expect(screen.getByText(tag)).toBeInTheDocument();
+    for (const project of projects) {
+      expect(screen.getByRole("heading", { name: project.name })).toBeInTheDocument();
+      // tags se repetem entre projetos, então basta existir ao menos uma
+      for (const tag of project.tags) {
+        expect(screen.getAllByText(tag).length).toBeGreaterThan(0);
+      }
     }
-    expect(screen.getByRole("link", { name: /acessar/i })).toHaveAttribute("href", project.url);
+
+    const online = projects.filter((p) => p.url);
+    const links = screen.getAllByRole("link", { name: /acessar/i });
+    expect(links).toHaveLength(online.length);
+    online.forEach((project, i) => {
+      expect(links[i]).toHaveAttribute("href", project.url);
+    });
+
     // repo é opcional; sem ele o botão GitHub não aparece
     expect(screen.queryByRole("link", { name: /github/i })).toBeNull();
+  });
+
+  it("lista o portfólio como primeiro projeto", () => {
+    expect(projects[0].name).toBe("Portfólio");
   });
 });
 
