@@ -36,6 +36,15 @@ test.describe("Navegação entre as seções", () => {
     await expect(links).toHaveCount(2);
     await expect(links.first()).toHaveAttribute("href", /portfolio-nathan-mateus/);
     await expect(links.last()).toHaveAttribute("href", /fintrack/);
+
+    // só o portfólio tem repositório público (escopo na seção: o rodapé também
+    // tem um link "github")
+    const repoLink = page.locator("#projetos").getByRole("link", { name: /github/i });
+    await expect(repoLink).toHaveCount(1);
+    await expect(repoLink).toHaveAttribute(
+      "href",
+      "https://github.com/onathanmateus/Portfolio",
+    );
   });
 
   test("navega pela navbar a partir da landing", async ({ page }) => {

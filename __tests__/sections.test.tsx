@@ -54,8 +54,13 @@ describe("Projects", () => {
       expect(links[i]).toHaveAttribute("href", project.url);
     });
 
-    // repo é opcional; sem ele o botão GitHub não aparece
-    expect(screen.queryByRole("link", { name: /github/i })).toBeNull();
+    // repo é opcional: o link do GitHub só aparece em quem tem
+    const comRepo = projects.filter((p) => p.repo);
+    const repoLinks = screen.queryAllByRole("link", { name: /github/i });
+    expect(repoLinks).toHaveLength(comRepo.length);
+    comRepo.forEach((project, i) => {
+      expect(repoLinks[i]).toHaveAttribute("href", project.repo);
+    });
   });
 
   it("lista o portfólio como primeiro projeto", () => {

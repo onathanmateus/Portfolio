@@ -144,6 +144,7 @@ export const projects: Project[] = [
     description:
       "Este site. Portfólio pessoal com visual tech/terminal: fundo animado de circuito em canvas, efeito Liquid Glass, tema claro/escuro e alternância entre português e inglês. Uma seção por tela, responsivo e acessível, com testes automatizados e CI/CD.",
     url: "https://portfolio-nathan-mateus.vercel.app/",
+    repo: "https://github.com/onathanmateus/Portfolio",
     tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "Motion"],
   },
   {
@@ -251,6 +252,7 @@ const projectsEn: Project[] = [
     description:
       "This site. Personal portfolio with a tech/terminal look: animated canvas circuit background, Liquid Glass effect, light/dark theme and Portuguese/English switching. One section per screen, responsive and accessible, with automated tests and CI/CD.",
     url: "https://portfolio-nathan-mateus.vercel.app/",
+    repo: "https://github.com/onathanmateus/Portfolio",
     tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "Motion"],
   },
   {
