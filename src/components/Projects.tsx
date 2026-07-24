@@ -19,7 +19,7 @@ export function Projects() {
 
       <Stagger className="flex flex-col gap-3">
         {projects.map((project, i) => (
-          <RevealItem key={project.name}>
+          <RevealItem key={i}>
             <article className="liquid-glass lift grid gap-4 rounded-2xl border p-6 md:grid-cols-[240px_1fr]">
               <div className="mono text-sm text-muted">
                 <span className="text-accent">

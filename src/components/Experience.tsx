@@ -16,7 +16,7 @@ export function Experience() {
 
       <Stagger className="flex flex-col gap-3">
         {experiences.map((exp, i) => (
-          <RevealItem key={`${exp.company}-${i}`}>
+          <RevealItem key={i}>
             <Card className="liquid-glass lift p-3.5">
               <Card.Header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-1">
