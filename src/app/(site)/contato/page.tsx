@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { Contact } from "@/components/Contact";
 import { SectionShell } from "@/components/SectionShell";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contato",
   description: "Fale com Nathan Mateus por email, LinkedIn ou GitHub.",
-};
+  path: "/contato",
+});
 
 export default function Page() {
   return (

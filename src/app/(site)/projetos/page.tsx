@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import { Projects } from "@/components/Projects";
 import { SectionShell } from "@/components/SectionShell";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Projetos",
   description:
     "Projetos desenvolvidos por Nathan Mateus, disponíveis no ar para explorar.",
-};
+  path: "/projetos",
+});
 
 export default function Page() {
   return (

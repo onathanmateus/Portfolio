@@ -5,7 +5,7 @@ import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
 import { LanguageProvider, langInitScript } from "@/components/LanguageProvider";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { siteConfig, siteUrl } from "@/lib/site";
-import { contact, profile } from "@/data/portfolio";
+import { contact, education, experiences, profile } from "@/data/portfolio";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -22,9 +22,27 @@ export const metadata: Metadata = {
     template: "%s — Nathan Mateus",
   },
   description: siteConfig.description,
-  keywords: ["Nathan Mateus", "Protheus", "ADVPL", "TLPP", "Desenvolvedor", "React", "Next.js"],
-  authors: [{ name: siteConfig.name, url: siteUrl }],
+  keywords: [
+    "Nathan Mateus",
+    "Analista de Sistemas",
+    "Protheus",
+    "TOTVS",
+    "ADVPL",
+    "TLPP",
+    "ERP",
+    "Desenvolvedor Web",
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Node.js",
+    "portfólio",
+    "Natal RN",
+  ],
+  authors: [{ name: siteConfig.name, url: siteConfig.links.github }],
   creator: siteConfig.name,
+  publisher: siteConfig.name,
+  applicationName: siteConfig.name,
+  category: "technology",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -54,11 +72,14 @@ export const viewport: Viewport = {
 };
 
 // Dados estruturados: ajuda o Google a entender quem é a pessoa.
+const currentJob = experiences.find((exp) => exp.current);
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: profile.name,
   jobTitle: profile.role,
+  description: profile.tagline,
   url: siteUrl,
   email: `mailto:${contact.email}`,
   address: {
@@ -67,8 +88,38 @@ const personJsonLd = {
     addressRegion: "RN",
     addressCountry: "BR",
   },
+  ...(currentJob
+    ? { worksFor: { "@type": "Organization", name: currentJob.company, url: currentJob.url } }
+    : {}),
+  alumniOf: education.map((item) => ({
+    "@type": "CollegeOrUniversity",
+    name: item.school,
+    url: item.url,
+  })),
+  knowsLanguage: ["pt-BR", "en"],
   sameAs: [contact.linkedin, contact.github],
-  knowsAbout: ["Protheus", "ADVPL", "TLPP", "React", "Next.js", "Node.js", "TypeScript"],
+  knowsAbout: [
+    "Protheus",
+    "ADVPL",
+    "TLPP",
+    "TOTVS",
+    "ERP",
+    "React",
+    "Next.js",
+    "Node.js",
+    "TypeScript",
+    "SQL",
+  ],
+};
+
+// Marca o site em si — ajuda o Google a exibir o nome certo nos resultados.
+const siteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.title,
+  url: siteUrl,
+  inLanguage: "pt-BR",
+  author: { "@type": "Person", name: profile.name, url: siteUrl },
 };
 
 export default function RootLayout({
@@ -87,6 +138,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
         />
       </head>
       <body className="relative min-h-full" suppressHydrationWarning>

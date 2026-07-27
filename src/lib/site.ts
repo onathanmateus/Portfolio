@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { profile, contact } from "@/data/portfolio";
 
 // URL base do site. Em produção use NEXT_PUBLIC_SITE_URL; na Vercel cai no
@@ -19,3 +20,36 @@ export const siteConfig = {
     email: contact.email,
   },
 } as const;
+
+// Metadata de uma rota interna. Sem isto, o `alternates` e o `openGraph` do
+// layout raiz são herdados: todas as páginas declarariam canonical (e OG) da
+// home, e o Google as trataria como duplicatas.
+export function pageMetadata({
+  title,
+  description,
+  path,
+}: {
+  title: string;
+  description: string;
+  path: string;
+}): Metadata {
+  const fullTitle = `${title} — ${profile.name}`;
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "website",
+      locale: siteConfig.locale,
+      siteName: siteConfig.name,
+      url: path,
+      title: fullTitle,
+      description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description,
+    },
+  };
+}
