@@ -28,14 +28,16 @@ test.describe("Navegação entre as seções", () => {
   test("página de projetos mostra os projetos e os links de acesso", async ({ page }) => {
     await page.goto("/projetos");
 
-    // o portfólio é o primeiro card, o FinTrack vem em seguida
+    // ordem dos cards: portfólio, FinTrack e QueryGraph
     await expect(page.getByRole("heading", { name: "Portfólio" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "FinTrack" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "QueryGraph" })).toBeVisible();
 
     const links = page.getByRole("link", { name: /acessar/i });
-    await expect(links).toHaveCount(2);
-    await expect(links.first()).toHaveAttribute("href", /portfolio-nathan-mateus/);
-    await expect(links.last()).toHaveAttribute("href", /fintrack/);
+    await expect(links).toHaveCount(3);
+    await expect(links.nth(0)).toHaveAttribute("href", /portfolio-nathan-mateus/);
+    await expect(links.nth(1)).toHaveAttribute("href", /fintrack/);
+    await expect(links.nth(2)).toHaveAttribute("href", /querygraph/);
 
     // só o portfólio tem repositório público (escopo na seção: o rodapé também
     // tem um link "github")

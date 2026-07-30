@@ -154,6 +154,13 @@ export const projects: Project[] = [
     url: "https://fintrack-nathan-mateus.vercel.app/",
     tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "Recharts"],
   },
+  {
+    name: "QueryGraph",
+    description:
+      "Visualizador de queries SQL: cole a consulta e a ferramenta desenha o grafo de dependências entre tabelas, CTEs e subqueries, mostra a ordem de execução e aponta anti-patterns. Editor com realce de sintaxe, comparação de queries e exportação em SVG, PNG, Mermaid ou DOT — tudo roda no navegador.",
+    url: "https://querygraph-nathan-mateus.vercel.app/",
+    tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "SQL"],
+  },
 ];
 
 export const education: Education[] = [
@@ -261,6 +268,13 @@ const projectsEn: Project[] = [
       "Local-first personal finance dashboard: transactions with categories and wallets, indicators, savings goals, charts, CSV import and PDF reports. Value masking — your data stays in your own browser.",
     url: "https://fintrack-nathan-mateus.vercel.app/",
     tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "Recharts"],
+  },
+  {
+    name: "QueryGraph",
+    description:
+      "SQL query visualizer: paste a query and the tool draws the dependency graph between tables, CTEs and subqueries, shows the execution order and flags anti-patterns. Syntax-highlighted editor, query comparison and export to SVG, PNG, Mermaid or DOT — it all runs in the browser.",
+    url: "https://querygraph-nathan-mateus.vercel.app/",
+    tags: ["Next.js", "React", "TypeScript", "HeroUI", "Tailwind CSS", "SQL"],
   },
 ];
 
