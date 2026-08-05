@@ -34,9 +34,9 @@ export function Projects() {
               </div>
 
               <div>
-                <h3 className="text-xl font-medium text-foreground sm:text-2xl">
+                <h2 className="text-xl font-medium text-foreground sm:text-2xl">
                   {project.name}
-                </h3>
+                </h2>
                 <p className="mt-2 max-w-2xl leading-relaxed text-muted">
                   {project.description}
                 </p>

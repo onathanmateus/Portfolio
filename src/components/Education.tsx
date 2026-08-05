@@ -19,9 +19,9 @@ export function Education() {
             <div className="liquid-glass lift grid gap-2 rounded-2xl border p-5 md:grid-cols-[240px_1fr] md:items-baseline">
               <span className="mono text-sm text-muted">{item.period}</span>
               <div>
-                <h3 className="text-xl font-medium text-foreground sm:text-2xl">
+                <h2 className="text-xl font-medium text-foreground sm:text-2xl">
                   {item.course}
-                </h3>
+                </h2>
                 <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-muted">
                   <Link
                     href={item.url}

@@ -7,7 +7,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // Os testes com axe são pesados; paralelismo total satura a máquina local e
+  // gera timeouts falsos.
+  workers: process.env.CI ? 1 : 4,
   reporter: process.env.CI ? "github" : "list",
   use: {
     baseURL,

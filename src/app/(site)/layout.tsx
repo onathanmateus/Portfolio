@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { SkipLink } from "@/components/SkipLink";
 
 // Cada página das seções ocupa exatamente uma tela: navbar fixa no topo,
 // conteúdo no meio e rodapé sempre visível — sem rolar a página até o rodapé
@@ -9,8 +10,13 @@ export default function SiteLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="flex h-[100svh] flex-col overflow-hidden">
+      <SkipLink />
       <Navbar />
-      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto pt-20">
+      <main
+        id="conteudo"
+        tabIndex={-1}
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto pt-20"
+      >
         {children}
       </main>
       <Footer />

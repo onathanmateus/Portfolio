@@ -31,6 +31,8 @@ export interface Experience {
 export interface SkillGroup {
   title: string;
   items: string[];
+  // Marca a especialidade principal, destacada visualmente na seção.
+  highlight?: boolean;
 }
 
 export interface Education {
@@ -127,6 +129,7 @@ export const skillGroups: SkillGroup[] = [
   {
     title: "ERP / Protheus",
     items: ["ADVPL / TLPP", "PO-UI"],
+    highlight: true,
   },
   {
     title: "Linguagens",
@@ -242,6 +245,7 @@ const skillGroupsEn: SkillGroup[] = [
   {
     title: "ERP / Protheus",
     items: ["ADVPL / TLPP", "PO-UI"],
+    highlight: true,
   },
   {
     title: "Languages",

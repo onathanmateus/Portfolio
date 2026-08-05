@@ -21,7 +21,11 @@ export function Hero() {
   const t = useUi();
 
   return (
-    <main className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-5 text-center">
+    <main
+      id="conteudo"
+      tabIndex={-1}
+      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-5 text-center"
+    >
       <motion.p {...item(0.12)} className="mono caret mb-4 text-sm font-medium tracking-wide text-accent">
         {profile.role}
       </motion.p>

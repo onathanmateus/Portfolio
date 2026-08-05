@@ -24,10 +24,14 @@ export function About() {
 
         <Reveal delay={0.1}>
           <Card className="liquid-glass lift h-full">
-            <Card.Content className="flex h-full flex-col justify-center gap-5">
-              <Detail label={t.about.role} value={profile.role} />
-              <Detail label={t.about.location} value={profile.location} />
-              <Detail label={t.about.focus} value={t.about.focusValue} />
+            <Card.Content className="flex h-full flex-col justify-center">
+              {/* <dt>/<dd> precisam estar dentro de um <dl> — fora dele o
+                  documento fica inválido e o axe acusa (WCAG 1.3.1). */}
+              <dl className="flex flex-col gap-5">
+                <Detail label={t.about.role} value={profile.role} />
+                <Detail label={t.about.location} value={profile.location} />
+                <Detail label={t.about.focus} value={t.about.focusValue} />
+              </dl>
             </Card.Content>
           </Card>
         </Reveal>

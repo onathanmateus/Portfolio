@@ -26,10 +26,12 @@
   --border: #d2dae4;
   --separator: #e3e9f0;
 
-  --accent: #0a6dff;
+  /* Azul escurecido o suficiente para passar de 4.5:1 sobre o fundo claro
+     (WCAG AA em texto pequeno); o #0a6dff original ficava em 3.99:1. */
+  --accent: #0a5fe0;
   --accent-foreground: #ffffff;
-  --focus: #0a6dff;
-  --link: #0a6dff;
+  --focus: #0a5fe0;
+  --link: #0a5fe0;
 }
 
 /* ---------- Tema escuro — cinza-escuro (não preto), azul ---------- */

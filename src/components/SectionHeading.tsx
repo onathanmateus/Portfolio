@@ -5,9 +5,16 @@ interface SectionHeadingProps {
   eyebrow?: string;
   title: string;
   subtitle?: string;
+  // Cada página tem um único título principal; nas rotas internas ele é o h1.
+  as?: "h1" | "h2";
 }
 
-export function SectionHeading({ eyebrow, title, subtitle }: SectionHeadingProps) {
+export function SectionHeading({
+  eyebrow,
+  title,
+  subtitle,
+  as = "h1",
+}: SectionHeadingProps) {
   return (
     <div className="mb-6">
       {eyebrow ? (
@@ -20,7 +27,7 @@ export function SectionHeading({ eyebrow, title, subtitle }: SectionHeadingProps
 
       <Reveal delay={0.05}>
         <Typewriter
-          as="h2"
+          as={as}
           trigger="hover"
           text={title}
           className="inline-block cursor-default text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"

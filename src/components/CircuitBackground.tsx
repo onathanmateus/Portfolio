@@ -32,10 +32,10 @@ type Colors = { line: string; pad: string; pulse: string; pulseSoft: string };
 function colorsFor(theme: string | null): Colors {
   if (theme === "light") {
     return {
-      line: "rgba(10,109,255,0.13)",
-      pad: "rgba(10,109,255,0.28)",
-      pulse: "#0a6dff",
-      pulseSoft: "rgba(10,109,255,0.0)",
+      line: "rgba(10,95,224,0.13)",
+      pad: "rgba(10,95,224,0.28)",
+      pulse: "#0a5fe0",
+      pulseSoft: "rgba(10,95,224,0.0)",
     };
   }
   return {

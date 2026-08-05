@@ -32,6 +32,13 @@ Object.defineProperty(globalThis, "ResizeObserver", {
   value: MockResizeObserver,
 });
 
+// O jsdom não implementa scroll; o ThemeProvider usa para forçar o repaint.
+Object.defineProperty(window, "scrollTo", {
+  writable: true,
+  configurable: true,
+  value: () => {},
+});
+
 if (!window.matchMedia) {
   Object.defineProperty(window, "matchMedia", {
     writable: true,

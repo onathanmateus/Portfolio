@@ -21,7 +21,11 @@ export function Experience() {
               <Card.Header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Card.Title className="text-xl">{exp.role}</Card.Title>
+                    {/* h2 nativo em vez de Card.Title: o título da seção é o
+                        h1 da página, então os cards não podem pular para h3. */}
+                    <h2 className="text-xl font-semibold text-foreground">
+                      {exp.role}
+                    </h2>
                     {exp.current ? (
                       <Chip color="accent" variant="soft" size="sm">
                         {t.experience.current}

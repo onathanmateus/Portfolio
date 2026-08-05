@@ -31,8 +31,10 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # Roda com cobertura: o jest.config define um piso mínimo, então uma
+      # regressão na suíte quebra o CI.
       - name: Unit tests (Jest)
-        run: npm test -- --ci
+        run: npm run test:coverage -- --ci
 
       - name: Build
         run: npm run build
@@ -53,8 +55,18 @@ jobs:
           if-no-files-found: ignore
 
   lighthouse:
-    name: Lighthouse (performance e a11y)
+    name: Lighthouse (${{ matrix.perfil }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - perfil: desktop
+            config: ./lighthouserc.json
+          # A maior parte dos acessos a um portfólio vem do celular, então o
+          # perfil móvel (rede e CPU limitadas) também tem piso próprio.
+          - perfil: mobile
+            config: ./lighthouserc.mobile.json
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -76,5 +88,5 @@ jobs:
       - name: Rodar Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
         with:
-          configPath: ./lighthouserc.json
+          configPath: ${{ matrix.config }}
           temporaryPublicStorage: true

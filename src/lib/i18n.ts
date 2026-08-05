@@ -14,6 +14,17 @@ export const ui = {
       contato: "Contato",
     },
     openMenu: "Abrir menu",
+    skipToContent: "Pular para o conteúdo",
+    copy: "Copiar",
+    copied: "Copiado!",
+    copyLabel: "Copiar o e-mail",
+    notFound: {
+      eyebrow: "// erro 404",
+      title: "Página não encontrada",
+      subtitle:
+        "O endereço não existe ou foi movido. Use os atalhos abaixo para voltar ao caminho.",
+      home: "Ir para o início",
+    },
     themeToDark: "Ativar tema escuro",
     themeToLight: "Ativar tema claro",
     langSwitch: "Mudar o idioma para inglês",
@@ -45,6 +56,7 @@ export const ui = {
       eyebrow: "// stack",
       title: "Conhecimentos técnicos",
       subtitle: "Ferramentas e tecnologias com que trabalho no dia a dia.",
+      specialty: "especialidade",
     },
     education: {
       eyebrow: "// formacao",
@@ -66,6 +78,17 @@ export const ui = {
       contato: "Contact",
     },
     openMenu: "Open menu",
+    skipToContent: "Skip to content",
+    copy: "Copy",
+    copied: "Copied!",
+    copyLabel: "Copy the e-mail address",
+    notFound: {
+      eyebrow: "// error 404",
+      title: "Page not found",
+      subtitle:
+        "This address doesn't exist or has moved. Use the shortcuts below to get back on track.",
+      home: "Go to the homepage",
+    },
     themeToDark: "Switch to dark theme",
     themeToLight: "Switch to light theme",
     langSwitch: "Switch the language to Portuguese",
@@ -97,6 +120,7 @@ export const ui = {
       eyebrow: "// stack",
       title: "Technical skills",
       subtitle: "Tools and technologies I work with day to day.",
+      specialty: "specialty",
     },
     education: {
       eyebrow: "// education",

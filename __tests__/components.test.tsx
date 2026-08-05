@@ -12,6 +12,16 @@ describe("SectionHeading", () => {
     expect(screen.getByText("Stack")).toBeInTheDocument();
     expect(screen.getByText("Minhas ferramentas")).toBeInTheDocument();
   });
+
+  it("usa h1 por padrão (é o título principal da página)", () => {
+    render(<SectionHeading title="Projetos" />);
+    expect(screen.getByRole("heading", { level: 1, name: "Projetos" })).toBeInTheDocument();
+  });
+
+  it("permite rebaixar para h2 quando a página já tem um h1", () => {
+    render(<SectionHeading title="Projetos" as="h2" />);
+    expect(screen.getByRole("heading", { level: 2, name: "Projetos" })).toBeInTheDocument();
+  });
 });
 
 describe("Footer", () => {
