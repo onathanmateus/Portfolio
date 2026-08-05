@@ -24,7 +24,10 @@ export function LanguageToggle() {
         animate={{ x: lang === "pt" ? 0 : 40 }}
         transition={{ type: "spring", stiffness: 400, damping: 32 }}
       />
+      {/* Rótulos decorativos: o estado real vai em aria-checked + aria-label.
+          Sem aria-hidden, o texto visível não bate com o nome acessível. */}
       <span
+        aria-hidden="true"
         className={`mono relative z-10 grid h-7 w-9 place-items-center text-xs font-semibold transition-colors ${
           lang === "pt" ? "text-accent-foreground" : "text-muted"
         }`}
@@ -32,6 +35,7 @@ export function LanguageToggle() {
         PT
       </span>
       <span
+        aria-hidden="true"
         className={`mono relative z-10 grid h-7 w-9 place-items-center text-xs font-semibold transition-colors ${
           lang === "en" ? "text-accent-foreground" : "text-muted"
         }`}

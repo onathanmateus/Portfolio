@@ -16,7 +16,7 @@ export const ui = {
     openMenu: "Abrir menu",
     themeToDark: "Ativar tema escuro",
     themeToLight: "Ativar tema claro",
-    langSwitch: "Switch to English",
+    langSwitch: "Mudar o idioma para inglês",
     hero: {
       ctaJourney: "Conhecer trajetória",
       ctaContact: "Entrar em contato",
@@ -68,7 +68,7 @@ export const ui = {
     openMenu: "Open menu",
     themeToDark: "Switch to dark theme",
     themeToLight: "Switch to light theme",
-    langSwitch: "Mudar para português",
+    langSwitch: "Switch the language to Portuguese",
     hero: {
       ctaJourney: "Explore my journey",
       ctaContact: "Get in touch",

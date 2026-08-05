@@ -151,8 +151,14 @@ export default function RootLayout({
             {children}
           </LanguageProvider>
         </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
+        {/* Os scripts só existem quando o site está hospedado na Vercel; fora
+            dela (dev, CI, Lighthouse) dariam 404 e poluiriam o console. */}
+        {process.env.VERCEL === "1" ? (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        ) : null}
       </body>
     </html>
   );
