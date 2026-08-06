@@ -12,6 +12,7 @@
 [![Motion](https://img.shields.io/badge/Motion-12-000000?logo=framer&logoColor=white)](https://motion.dev/)
 [![Jest](https://img.shields.io/badge/Jest-tested-c21325?logo=jest&logoColor=white)](https://jestjs.io/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-100%20a11y-f44b21?logo=lighthouse&logoColor=white)](https://developer.chrome.com/docs/lighthouse/)
 [![CI](https://github.com/onathanmateus/Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/onathanmateus/Portfolio/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -31,7 +32,7 @@
 - 🔎 **SEO & compartilhamento** — metadata por rota, **OG/Twitter image** dinâmica (`next/og`), `sitemap.xml`, `robots.txt` e **JSON-LD `Person`**.
 - 📊 **Vercel Analytics + Speed Insights** integrados.
 - 📱 **Responsivo** e ♿ **acessível** — foco visível por teclado, `theme-color`, `aria-label`s e respeito ao `prefers-reduced-motion`.
-- ✅ **Testado** (Jest + Playwright) e com **CI/CD** (GitHub Actions + Dependabot _auto-merge_).
+- ✅ **Testado** — Jest (unitários, com piso de cobertura) e Playwright (E2E), incluindo auditoria de acessibilidade com **axe** em todas as rotas.
 
 ## 🧱 Stack
 
@@ -44,7 +45,8 @@
 | Fonte | [JetBrains Mono](https://www.jetbrains.com/lp/mono/) via `next/font` |
 | Testes | [Jest](https://jestjs.io/) + [Testing Library](https://testing-library.com/) (unit) · [Playwright](https://playwright.dev/) (E2E) |
 | Métricas | [Vercel Analytics](https://vercel.com/analytics) · [Speed Insights](https://vercel.com/docs/speed-insights) |
-| CI | [GitHub Actions](https://github.com/onathanmateus/Portfolio/actions) (lint, tipos, testes, build, E2E) + [Dependabot](https://docs.github.com/code-security/dependabot) |
+| Qualidade | [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) (desktop e mobile) · [axe](https://github.com/dequelabs/axe-core) para acessibilidade |
+| CI | [GitHub Actions](https://github.com/onathanmateus/Portfolio/actions) nos PRs + [Dependabot](https://docs.github.com/code-security/dependabot) com _auto-merge_ |
 | Hospedagem | [Vercel](https://vercel.com/) |
 
 ## 🚀 Como executar
@@ -95,7 +97,8 @@ src/
     └── site.ts           # config de SEO + URL base
 __tests__/                # testes unitários (Jest + Testing Library)
 tests-e2e/                # testes end-to-end (Playwright)
-.github/                  # workflows de CI, Dependabot e auto-merge
+.github/                  # workflows de CI (em PRs), Dependabot e auto-merge
+lighthouserc*.json        # metas do Lighthouse (desktop e mobile)
 ```
 
 ## 🗺️ Rotas
@@ -120,16 +123,28 @@ O app tem tema **claro** e **escuro** (ambos em azul; o escuro em cinza-grafite)
 
 ## 🧪 Testes & CI
 
-**Unitários (Jest)** — em [`__tests__/`](__tests__/), com Jest + Testing Library (ambiente `jsdom`), cobrindo conteúdo, componentes e seções.
+A verificação roda **localmente antes de cada push** na `main`. No GitHub, o [workflow de CI](.github/workflows/ci.yml) roda **apenas em pull requests** — na prática, os do Dependabot — para poupar minutos do plano gratuito.
 
 ```bash
-npm run test      # unitários
-npm run test:e2e  # end-to-end (Playwright)
+npm run lint           # ESLint
+npm run typecheck      # tsc --noEmit
+npm run test:coverage  # Jest, com piso mínimo de cobertura
+npm run build          # build de produção
+npm run test:e2e       # Playwright (E2E + acessibilidade)
 ```
 
-**End-to-end (Playwright)** — em [`tests-e2e/`](tests-e2e/): navega pelas rotas, valida o conteúdo e a troca de tema.
+**Unitários (Jest)** — em [`__tests__/`](__tests__/), com Jest + Testing Library (`jsdom`): conteúdo, componentes, alternância de tema e de idioma, efeito de digitação e metadados. O piso de cobertura está em [`jest.config.mjs`](jest.config.mjs).
 
-**CI (GitHub Actions)** — a cada _push_ na `main` e em PRs, o [workflow](.github/workflows/ci.yml) roda **lint → typecheck → testes → build → E2E** (com upload do relatório do Playwright como artefato). O **Dependabot** abre PRs semanais de atualização e faz _auto-merge_ quando a CI passa.
+**End-to-end (Playwright)** — em [`tests-e2e/`](tests-e2e/): navega pelas rotas, valida conteúdo, tema e idioma, e roda o **axe** em todas as páginas (nos dois temas e nos dois idiomas) exigindo zero violações WCAG 2.1 AA.
+
+**Lighthouse** — metas por categoria em [`lighthouserc.json`](lighthouserc.json) (desktop) e [`lighthouserc.mobile.json`](lighthouserc.mobile.json) (mobile):
+
+```bash
+npm run build && npm start           # em um terminal
+npx @lhci/cli autorun --config=./lighthouserc.json
+```
+
+**Dependabot** — abre PRs semanais agrupados de atualização ([`dependabot.yml`](.github/dependabot.yml)). O CI roda no PR e, passando, o [auto-merge](.github/workflows/dependabot-auto-merge.yml) aprova, faz _squash_ na `main` e apaga o branch.
 
 ---
 

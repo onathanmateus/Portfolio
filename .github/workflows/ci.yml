@@ -1,8 +1,8 @@
 name: CI
 
+# Só em pull request (na prática, os do Dependabot): os pushes diretos na main
+# são validados localmente antes de subir, o que poupa minutos do plano free.
 on:
-  push:
-    branches: [main]
   pull_request:
 
 permissions:
