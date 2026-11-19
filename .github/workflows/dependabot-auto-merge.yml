@@ -1,9 +1,10 @@
 name: Dependabot auto-merge
 
 # Quando o CI termina com sucesso num PR do Dependabot, aprova e faz squash-merge
-# na main, apagando o branch em seguida. Se o CI falhar, nada é mergeado (o
-# Dependabot refaz o PR na próxima). Assim tudo fica atualizado só na main, sem
-# branches pendentes (inclusive na Vercel). Roda 100% sozinho.
+# na main, apagando o branch em seguida. Se o CI falhar, quem assume é o
+# dependabot-lockfile-fix: regenera o lock quando o problema é ele (e mergeia),
+# ou avisa no PR quando é outra coisa. Assim tudo fica atualizado só na main,
+# sem branches pendentes (inclusive na Vercel).
 on:
   workflow_run:
     workflows: ["CI"]

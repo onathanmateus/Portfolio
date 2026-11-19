@@ -2,8 +2,11 @@ name: CI
 
 # Só em pull request (na prática, os do Dependabot): os pushes diretos na main
 # são validados localmente antes de subir, o que poupa minutos do plano free.
+# O workflow_dispatch é para o dependabot-lockfile-fix: um push feito com o
+# GITHUB_TOKEN não dispara o pull_request, mas pode disparar este gatilho.
 on:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read

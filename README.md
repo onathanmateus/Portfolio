@@ -144,7 +144,7 @@ npm run build && npm start           # em um terminal
 npx @lhci/cli autorun --config=./lighthouserc.json
 ```
 
-**Dependabot** — abre PRs semanais agrupados de atualização ([`dependabot.yml`](.github/dependabot.yml)). O CI roda no PR e, passando, o [auto-merge](.github/workflows/dependabot-auto-merge.yml) aprova, faz _squash_ na `main` e apaga o branch.
+**Dependabot** — abre PRs semanais agrupados de atualização ([`dependabot.yml`](.github/dependabot.yml)). O CI roda no PR e, passando, o [auto-merge](.github/workflows/dependabot-auto-merge.yml) aprova, faz _squash_ na `main` e apaga o branch. Se o CI falhar porque o Dependabot deixou o `package-lock.json` incoerente (um pacote passou a exigir um _peer_ mais novo), o [lockfile fix](.github/workflows/dependabot-lockfile-fix.yml) regenera o lock, roda o CI de novo e faz o merge sozinho; se a falha for outra, ele avisa no próprio PR.
 
 ---
 
