@@ -1,0 +1,75 @@
+"use client";
+
+import Link from "next/link";
+import { motion } from "motion/react";
+import { Magnetic } from "./Magnetic";
+import { Typewriter } from "./Typewriter";
+import { useContent, useUi } from "./LanguageProvider";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+function item(delay: number) {
+  return {
+    initial: { opacity: 0, y: 24 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, delay, ease: EASE },
+  };
+}
+
+export function Hero() {
+  const { profile } = useContent();
+  const t = useUi();
+
+  return (
+    <main
+      id="conteudo"
+      tabIndex={-1}
+      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-5 text-center"
+    >
+      <motion.p {...item(0.12)} className="mono caret mb-4 text-sm font-medium tracking-wide text-accent">
+        {profile.role}
+      </motion.p>
+
+      <motion.h1
+        {...item(0.18)}
+        className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-6xl md:text-7xl"
+      >
+        <Typewriter
+          as="span"
+          trigger="mount"
+          startDelay={350}
+          speed={70}
+          text={profile.name}
+          className="shimmer inline-block"
+        />
+      </motion.h1>
+
+      <motion.p {...item(0.26)} className="mt-6 max-w-xl text-base text-muted sm:text-lg md:text-xl">
+        {profile.tagline}
+      </motion.p>
+
+      <motion.div {...item(0.34)} className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <Magnetic className="inline-flex">
+          <Link
+            href="/sobre"
+            className="liquid-sheen inline-block rounded-full border border-transparent bg-accent px-6 py-3 text-sm font-medium text-accent-foreground shadow-lg shadow-accent/25 transition-transform active:scale-95"
+          >
+            {t.hero.ctaJourney}
+          </Link>
+        </Magnetic>
+        <Magnetic className="inline-flex">
+          <Link
+            href="/contato"
+            className="liquid-glass inline-block rounded-full border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
+          >
+            {t.hero.ctaContact}
+          </Link>
+        </Magnetic>
+      </motion.div>
+
+      <motion.p {...item(0.42)} className="mono mt-12 text-sm text-muted">
+        {profile.location}
+      </motion.p>
+    </main>
+  );
+}

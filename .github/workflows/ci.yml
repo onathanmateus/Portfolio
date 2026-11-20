@@ -1,0 +1,95 @@
+name: CI
+
+# Só em pull request (na prática, os do Dependabot): os pushes diretos na main
+# são validados localmente antes de subir, o que poupa minutos do plano free.
+# O workflow_dispatch é para o dependabot-lockfile-fix: um push feito com o
+# GITHUB_TOKEN não dispara o pull_request, mas pode disparar este gatilho.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint · Typecheck · Test · Build · E2E
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Roda com cobertura: o jest.config define um piso mínimo, então uma
+      # regressão na suíte quebra o CI.
+      - name: Unit tests (Jest)
+        run: npm run test:coverage -- --ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests (Playwright)
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  lighthouse:
+    name: Lighthouse (${{ matrix.perfil }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - perfil: desktop
+            config: ./lighthouserc.json
+          # A maior parte dos acessos a um portfólio vem do celular, então o
+          # perfil móvel (rede e CPU limitadas) também tem piso próprio.
+          - perfil: mobile
+            config: ./lighthouserc.mobile.json
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # Os pisos por categoria ficam no lighthouserc.json; 3 execuções para
+      # reduzir o ruído de medição do runner.
+      - name: Rodar Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ${{ matrix.config }}
+          temporaryPublicStorage: true
