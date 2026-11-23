@@ -3,157 +3,72 @@ name: Dependabot lockfile fix
 # O Dependabot só mexe nos pacotes que está atualizando, nunca nas dependências
 # transitivas. Quando um pacote passa a exigir um peer mais novo (o HeroUI faz
 # isso com o react-aria), o package-lock.json sai incoerente e o `npm ci` do CI
-# quebra com ERESOLVE — o PR nunca passa e fica parado até alguém intervir.
+# quebra com ERESOLVE — o PR nunca passa e fica parado.
 #
-# Este workflow pega esse caso: quando o CI de um PR do Dependabot falha, ele
-# confere se o problema é o lock, regenera do zero, roda o CI de novo e, se
-# passar, faz o squash-merge e apaga o branch. Se a falha for outra (teste,
-# build, Lighthouse), ele não mexe em nada e avisa no PR.
+# Este workflow destrava esses PRs: traz o branch para cima da main, regenera o
+# lock, roda o CI e, passando, faz o squash-merge e apaga o branch. Se a falha
+# for outra (teste, build, Lighthouse), não mexe em nada e avisa no PR. A lógica
+# fica em .github/scripts/dependabot-lockfix.sh.
 on:
+  # Assim que o CI de um PR do Dependabot falha.
   workflow_run:
     workflows: ["CI"]
     types: [completed]
+  # Rede de segurança diária: pega PR em conflito com a main, merge que não
+  # aconteceu ou evento perdido.
+  schedule:
+    - cron: "17 12 * * *"
+  # Manual, para destravar um PR específico na hora.
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: "Número do PR do Dependabot (vazio = todos os abertos)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
   pull-requests: write
   actions: write
 
+# Um de cada vez: duas correções em paralelo brigariam pela main.
 concurrency:
-  group: dependabot-lockfix-${{ github.event.workflow_run.head_branch }}
+  group: dependabot-lockfix
   cancel-in-progress: false
 
 jobs:
   lockfix:
-    name: Regenerar o lock e mergear
+    name: Destravar PRs do Dependabot
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     if: >
-      github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.conclusion == 'failure' &&
-      github.event.workflow_run.actor.login == 'dependabot[bot]' &&
-      startsWith(github.event.workflow_run.head_branch, 'dependabot/npm_and_yarn/')
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      REPO: ${{ github.repository }}
-      OWNER: ${{ github.repository_owner }}
-      BRANCH: ${{ github.event.workflow_run.head_branch }}
-      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      github.event_name != 'workflow_run' || (
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.conclusion == 'failure' &&
+        github.event.workflow_run.actor.login == 'dependabot[bot]' &&
+        startsWith(github.event.workflow_run.head_branch, 'dependabot/npm_and_yarn/'))
     steps:
-      - name: Localizar o PR
-        id: pr
-        run: |
-          pr=$(gh pr list --repo "$REPO" --head "$BRANCH" --state open \
-                --json number,author,headRefOid \
-                --jq '.[0] | select(.author.login == "app/dependabot" or .author.login == "dependabot[bot]") | "\(.number) \(.headRefOid)"')
-          if [ -z "$pr" ]; then
-            echo "Nenhum PR aberto do Dependabot para $BRANCH."
-            exit 0
-          fi
-          read -r number head <<<"$pr"
-          if [ "$head" != "$HEAD_SHA" ]; then
-            echo "O branch andou desde esse CI ($HEAD_SHA -> $head); o CI novo cuida disso."
-            exit 0
-          fi
-          echo "number=$number" >> "$GITHUB_OUTPUT"
-
-      - name: Checkout do branch do Dependabot
-        if: steps.pr.outputs.number
+      - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: ${{ env.BRANCH }}
+          ref: main
+          fetch-depth: 0
 
       - name: Setup Node
-        if: steps.pr.outputs.number
         uses: actions/setup-node@v7
         with:
           node-version: 20
 
-      # --ignore-scripts em tudo: nenhum script de pacote roda com este token.
-      - name: Diagnosticar e regenerar o lock
-        id: lock
-        if: steps.pr.outputs.number
-        run: |
-          if npm ci --ignore-scripts --no-audit --no-fund; then
-            echo "O lock instala normalmente: a falha do CI veio de outro passo."
-            echo "result=lock-ok" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          # Resolução do zero, sem lock e sem node_modules — com qualquer um dos
-          # dois presente o npm tenta preservar a árvore antiga e cai no mesmo
-          # conflito.
-          rm -rf node_modules package-lock.json
-          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
-          if ! npm ci --ignore-scripts --no-audit --no-fund; then
-            echo "result=lock-irrecuperavel" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "result=lock-corrigido" >> "$GITHUB_OUTPUT"
-
-      - name: Gravar o lock corrigido no PR
-        id: push
-        if: steps.lock.outputs.result == 'lock-corrigido'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          # Emenda o commit do próprio Dependabot (o autor continua sendo ele),
-          # para o squash na main não ganhar um co-autor a mais.
-          if [ "$(git log -1 --format=%an)" = "dependabot[bot]" ]; then
-            git commit --amend --no-edit
-          else
-            git commit -m "fix(deps): regenera o package-lock.json"
-          fi
-          git push --force-with-lease="$BRANCH:$HEAD_SHA" origin "HEAD:$BRANCH"
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Rodar o CI de novo
-        id: ci
-        if: steps.push.outputs.sha
+      - name: Destravar os PRs
         env:
-          NEW_SHA: ${{ steps.push.outputs.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          EVENT: ${{ github.event_name }}
+          PR_INPUT: ${{ inputs.pr }}
+          RUN_URL_ESTE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        # Roda uma cópia: o script troca de branch e o original some do disco
+        # nos branches antigos.
         run: |
-          gh workflow run ci.yml --repo "$REPO" --ref "$BRANCH"
-          run=""
-          for _ in $(seq 1 30); do
-            run=$(gh run list --repo "$REPO" --workflow ci.yml --branch "$BRANCH" \
-                    --event workflow_dispatch --json databaseId,headSha \
-                    --jq ".[] | select(.headSha == \"$NEW_SHA\") | .databaseId" | head -n1)
-            [ -n "$run" ] && break
-            sleep 10
-          done
-          if [ -z "$run" ]; then
-            echo "result=sem-run" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if gh run watch "$run" --repo "$REPO" --exit-status --interval 30; then
-            echo "result=ok" >> "$GITHUB_OUTPUT"
-          else
-            echo "result=falhou" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Mergear o PR
-        id: merge
-        if: steps.ci.outputs.result == 'ok'
-        run: |
-          gh pr merge "${{ steps.pr.outputs.number }}" --repo "$REPO" \
-            --squash --delete-branch --match-head-commit "${{ steps.push.outputs.sha }}"
-
-      - name: Avisar no PR quando precisar de gente
-        if: always() && steps.pr.outputs.number && steps.merge.outcome != 'success'
-        env:
-          LOCK: ${{ steps.lock.outputs.result }}
-          CI: ${{ steps.ci.outputs.result }}
-          CI_ORIGINAL: ${{ github.event.workflow_run.html_url }}
-          ESTE_RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          case "$LOCK" in
-            lock-ok) motivo="o lock está coerente, então a falha do CI veio de outro passo (lint, testes, build ou Lighthouse)." ;;
-            lock-irrecuperavel) motivo="regenerar o lock do zero não resolveu o conflito de dependências." ;;
-            lock-corrigido) motivo="o lock foi regenerado, mas o CI não passou depois disso (${CI:-sem resultado})." ;;
-            *) motivo="a correção automática falhou antes de concluir." ;;
-          esac
-          gh pr comment "${{ steps.pr.outputs.number }}" --repo "$REPO" --body "@$OWNER este PR do Dependabot precisa de atenção: $motivo
-
-          - CI original: $CI_ORIGINAL
-          - Correção automática: $ESTE_RUN"
+          cp .github/scripts/dependabot-lockfix.sh "$RUNNER_TEMP/lockfix.sh"
+          bash "$RUNNER_TEMP/lockfix.sh"
